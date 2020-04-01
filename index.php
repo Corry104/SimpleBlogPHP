@@ -6,9 +6,9 @@
 
     $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-    if($_POST['delete']){
-        echo $_POST['delete_id'];
-    }
+    // if($_POST['delete']){
+    //     echo $_POST['delete_id'];
+    // }
 
     if($post['submit']){
         $id = $post['id'];
@@ -16,10 +16,10 @@
         $body = $post['body'];
 
         // Insert Posts into database
-        $database->query('UPDATE posts SET title = :title, body = :body WHERE id = :id');
+        $database->query('INSERT INTO posts (title, body) VALUES (:title, :body)');
         $database->bind(':title', $title);
         $database->bind(':body', $body);
-        $database->bind(':id', $id);
+        // $database->bind(':id', $id);
         $database->execute();
     }
 
@@ -45,6 +45,7 @@
     <br>
     <textarea name="body"></textarea>
     <br>
+    <br>
     <input type="submit" name='submit' value='Submit' />
 </form>
 
@@ -59,10 +60,10 @@
             <p><?php echo$row['body']; ?></p>
             <br>
             <!-- Delete posts -->
-            <form method='post' action='<?php $_SERVER['PHP_SELF']; ?>'>
+            <!-- <form method='post' action='<?php $_SERVER['PHP_SELF']; ?>'>
                 <input type="hidden" name='delete_id' value='<?php echo $row['id']; ?>'>
                 <input type="submit" name='delete' value='Delete' />
-            </form>
+            </form> -->
         </div>
     <?php endforeach; ?>
 </div>
