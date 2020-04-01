@@ -6,19 +6,21 @@
 
     $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
+    if($_POST['delete']){
+        echo $_POST['delete_id'];
+    }
+
     if($post['submit']){
+        $id = $post['id'];
         $title = $post['title'];
         $body = $post['body'];
 
         // Insert Posts into database
-        $database->query('INSERT INTO posts (title, body) VALUES(:title, :body)');
+        $database->query('UPDATE posts SET title = :title, body = :body WHERE id = :id');
         $database->bind(':title', $title);
         $database->bind(':body', $body);
+        $database->bind(':id', $id);
         $database->execute();
-
-        if($database->lastInsertId()){
-            echo '<p>Post Added!</p>';
-        }
     }
 
     // Make posts be able to appear without refreshing the browser
@@ -29,6 +31,11 @@
 
 <h1>Add Post</h1>
 <form method='post' action='<?php $_SERVER['PHP_SELF']; ?>'>
+<label>Post ID</label>
+    <br/>
+    <input type="text" name="id" placeholder="Specify ID..."  />
+    <br>
+    <br>
     <label>Post Title</label>
     <br/>
     <input type="text" name="title" placeholder="Add a title..."  />
@@ -50,6 +57,12 @@
 
             <!-- Body of the post -->
             <p><?php echo$row['body']; ?></p>
+            <br>
+            <!-- Delete posts -->
+            <form method='post' action='<?php $_SERVER['PHP_SELF']; ?>'>
+                <input type="hidden" name='delete_id' value='<?php echo $row['id']; ?>'>
+                <input type="submit" name='delete' value='Delete' />
+            </form>
         </div>
     <?php endforeach; ?>
 </div>
